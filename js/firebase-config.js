@@ -1,5 +1,5 @@
-export const firebaseConfig = {
-  apiKey: "AIzaSyBAF5D32FN4BO4w8IyNMSkBBVUZP90uDCc",
+const firebaseConfig = {
+  apiKey: "AIzaSyBAF5D32FN40O4w8IyNMSkBBVUZP90uDCc",
   authDomain: "unas-luze.firebaseapp.com",
   projectId: "unas-luze",
   storageBucket: "unas-luze.firebasestorage.app",
