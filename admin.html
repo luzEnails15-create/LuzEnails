@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administración — Estudio de Uñas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Sora:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="js-business-name">Estudio de Uñas</span><span class="brand-dot">•</span> Admin</div>
+    <nav>
+      <a href="index.html">Ver página de clientes</a>
+      <button id="logoutBtn" class="btn-ghost" style="background:transparent;color:#FBF3EC;border:none;text-decoration:underline;font-size:14px;margin-left:18px;padding:0;cursor:pointer;">Cerrar sesión</button>
+    </nav>
+  </div>
+</header>
+
+<main class="page admin-shell">
+
+  <!-- LOGIN -->
+  <section class="section-card login-card" id="loginCard">
+    <h2 class="section-title">Iniciar sesión</h2>
+    <p class="section-hint">Acceso exclusivo para el administrador del estudio.</p>
+    <div class="msg error" id="loginError" hidden></div>
+    <form id="loginForm">
+      <div class="field">
+        <label for="email">Correo</label>
+        <input type="email" id="email" name="email" required autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+    </form>
+  </section>
+
+  <!-- PANEL -->
+  <div id="adminShell" hidden>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="tabServices">Servicios</button>
+      <button class="tab-btn" data-tab="tabSchedule">Horario</button>
+      <button class="tab-btn" data-tab="tabAppointments">Citas</button>
+    </div>
+
+    <!-- TAB SERVICIOS -->
+    <section class="tab-panel active" id="tabServices">
+      <div class="section-card">
+        <h2 class="section-title">Añadir servicio</h2>
+        <p class="section-hint">Define el nombre, precio y duración. La duración determina cuánto ocupa cada cita en la agenda.</p>
+        <div class="msg" id="serviceMsg" hidden></div>
+        <form id="serviceForm" class="form-grid">
+          <div class="field" style="margin-bottom:0;">
+            <label for="svcName">Nombre</label>
+            <input type="text" id="svcName" name="name" required placeholder="Ej: Manicure semipermanente">
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label for="svcPrice">Precio (COP)</label>
+            <input type="number" id="svcPrice" name="price" required min="0" step="1000" placeholder="45000">
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label for="svcDuration">Duración (minutos)</label>
+            <input type="number" id="svcDuration" name="duration" required min="5" step="5" placeholder="60">
+          </div>
+          <button type="submit" class="btn btn-primary">Añadir</button>
+        </form>
+      </div>
+
+      <div class="section-card">
+        <h2 class="section-title">Servicios actuales</h2>
+        <table class="table" id="servicesTable">
+          <thead>
+            <tr><th>Servicio</th><th>Precio</th><th>Duración</th><th>Estado</th><th>Acciones</th></tr>
+          </thead>
+          <tbody><tr><td colspan="5" class="empty-state">Cargando…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB HORARIO -->
+    <section class="tab-panel" id="tabSchedule">
+      <div class="section-card">
+        <h2 class="section-title">Horario de atención</h2>
+        <p class="section-hint">Define el nombre del negocio, el intervalo de la agenda y los horarios por día.</p>
+        <div class="msg" id="scheduleMsg" hidden></div>
+        <form id="scheduleForm">
+          <div class="form-grid">
+            <div class="field" style="margin-bottom:0;">
+              <label for="businessName">Nombre del negocio</label>
+              <input type="text" id="businessName" name="businessName" required>
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label for="slotInterval">Intervalo de la agenda</label>
+              <select id="slotInterval" name="slotInterval">
+                <option value="15">Cada 15 minutos</option>
+                <option value="30">Cada 30 minutos</option>
+                <option value="45">Cada 45 minutos</option>
+                <option value="60">Cada 60 minutos</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="hoursGrid"></div>
+
+          <button type="submit" class="btn btn-primary" style="margin-top:10px;">Guardar horario</button>
+        </form>
+      </div>
+
+      <div class="section-card">
+        <h2 class="section-title">Fechas puntuales cerradas</h2>
+        <p class="section-hint">Para festivos o días sin atención, sin afectar el horario semanal habitual.</p>
+        <div class="form-grid" style="grid-template-columns:1fr auto;">
+          <div class="field" style="margin-bottom:0;">
+            <label for="closedDateInput">Fecha</label>
+            <input type="date" id="closedDateInput">
+          </div>
+          <button type="button" id="addClosedDateBtn" class="btn btn-ghost">Añadir</button>
+        </div>
+        <div id="closedDatesList" style="margin-top:16px;"></div>
+      </div>
+    </section>
+
+    <!-- TAB CITAS -->
+    <section class="tab-panel" id="tabAppointments">
+      <div class="section-card">
+        <h2 class="section-title">Citas agendadas</h2>
+        <p class="section-hint">Aquí ves el nombre y teléfono de cada cliente; esta información no es visible en la página pública.</p>
+        <div class="msg" id="appointmentsMsg" hidden></div>
+        <label class="toggle-closed" style="margin-bottom:16px;">
+          <input type="checkbox" id="showPastCheckbox">
+          Mostrar también citas pasadas
+        </label>
+        <label class="toggle-closed" style="margin-bottom:16px;">
+          <input type="checkbox" id="showTodayOnlyCheckbox">
+          Mostrar solo las citas de hoy (para enviar recordatorios)
+        </label>
+        <table class="table" id="appointmentsTable">
+          <thead>
+            <tr><th>Fecha</th><th>Hora</th><th>Servicio</th><th>Cliente</th><th>Teléfono</th><th>Estado</th><th>Acciones</th></tr>
+          </thead>
+          <tbody><tr><td colspan="7" class="empty-state">Cargando…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+
+</main>
+
+<footer class="foot">Panel de administración · <span class="js-business-name">Estudio de Uñas</span></footer>
+
+<script type="module" src="js/admin.js"></script>
+</body>
+</html>
